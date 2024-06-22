@@ -1,0 +1,73 @@
+image: docker:20
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - push
+  - deploy
+
+variables:
+  DOCKER_DRIVER: overlayfs
+
+before_script:
+  - env
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - if [ "$CI_COMMIT_BRANCH" == "master" ]; then PIPELINE_IMAGE_TAG="live"; else PIPELINE_IMAGE_TAG="staging"; fi
+  - CONTAINER_NAME=$CI_BUILD_TAG\_$CI_COMMIT_SHORT_SHA
+
+build_image:
+  stage: build
+  tags:
+    - pdfs
+  retry: 2
+  only:
+    - staging
+    - production
+  interruptible: true
+
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:$PIPELINE_IMAGE_TAG || true
+    - >
+      docker build
+      --pull
+      --cache-from $CI_REGISTRY_IMAGE:$PIPELINE_IMAGE_TAG
+      --tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+
+push_image:
+  stage: push
+  tags:
+    - pdfs
+  only:
+    - staging
+    - production
+  variables:
+    GIT_STRATEGY: none
+  interruptible: true
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker image rm $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+
+
+
+deploy_srv:
+  stage: deploy
+  image: nexus.bmbzr.ir/nile/pdf-classifier:v0.1
+  tags:
+    - pdfs
+  variables:
+    GIT_STRATEGY: none
+    LANG: en_US.utf-8
+  script:
+    - ssh pdfs "docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY && docker pull $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG && docker service update --with-registry-auth --force --image $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG pdf-classifier-vit"
+    # OR - docker compose up -d --build --force-recreate
+  only:
+    - production
+
+

@@ -1,0 +1,85 @@
+query ChatPaginationQuery($chatId: BigInt!, $before: String, $last: Int = 10) {
+  chat(chatId: $chatId) {
+    id
+    messagesConnection(before: $before, last: $last) {
+      pageInfo {
+        hasPreviousPage
+      }
+      edges {
+        node {
+          __typename
+          id
+          ...MessageFragment
+        }
+      }
+    }
+  }
+}
+fragment MessageAttachmentFragment on MessageAttachment {
+  id
+  name
+  url
+  file {
+    size
+    mimeType
+    height
+    width
+    thumbnailUrl
+  }
+  isInline
+  attachmentId
+}
+fragment MessageAttachmentsFragment on Message {
+  attachments {
+    __typename
+    id
+    ...MessageAttachmentFragment
+  }
+}
+fragment BotImageInfoFragment on Bot {
+  id
+  botImageInfo {
+    assetTypeToUse
+    localAssetName
+    remoteAssetUrl
+  }
+}
+fragment MessageBotHeaderFragment on Message {
+  bot {
+    __typename
+    id
+    botId
+    ...BotImageInfoFragment
+    displayName
+    deletionState
+    handle
+    supportsResend
+    supportsRemix
+  }
+}
+fragment MessageRecommendedBotsFragment on Bot {
+  __typename
+  id
+  ...BotImageInfoFragment
+  displayName
+}
+fragment MessageFragment on Message {
+  __typename
+  id
+  messageId
+  text
+  authorNickname
+  sourceType
+  state
+  suggestedReplies
+  vote
+  hasCitations
+  ...MessageAttachmentsFragment
+  creationTime
+  ...MessageBotHeaderFragment
+  recommendedBots {
+    __typename
+    id
+    ...MessageRecommendedBotsFragment
+  }
+}

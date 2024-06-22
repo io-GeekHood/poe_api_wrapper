@@ -1,0 +1,47 @@
+{
+    "BotQuery":{
+        "name": "Assistant"
+    },
+    "ChatListQuery":{
+        "first": 10,
+        "after": null,
+        "botId": 3002
+      },
+    "ChatPaginationQuery":{
+        "chatId": 423252496,
+        "before": "156525260627",
+        "last": 25
+    },
+    "ChatQuery":{
+        "chatId": 423226195
+    },
+    "ExploreBotsPaginationQuery":{
+        "first": 24,
+        "after": null,
+        "categoryName": "New"
+    },
+    "MessageEdgeCreateMutation":{
+        "chatId": null,
+        "attachments": null,
+        "bot": "capybara",
+        "query": "",
+        "source": {
+          "sourceType": "chat_input",
+          "chatInputMetadata": {
+            "useVoiceRecord": false,
+            "newChatContext": null
+          }
+        },
+        "messagePointPrice": 20,
+        "existingMessageAttachmentsIds": null
+      },
+    "PaginatedAvailableBotsQuery":{
+        "first": 30,
+        "after": null
+      },
+    "SubscriptionQuery": {},
+    "SettingsInfoQuery": {},
+    "SettingsDeleteAllChatsMutation":{}
+
+
+}

@@ -1,0 +1,75 @@
+query ChatListQuery($first: Int, $after: String, $botId: BigInt) {
+  chats(first: $first, after: $after, botId: $botId) {
+    pageInfo {
+      hasNextPage
+    }
+    edges {
+      id
+      node {
+        __typename
+        id
+        chatId
+        ...ChatListChatFragment
+        messagesConnection(last: 2) {
+          id
+          edges {
+            id
+            node {
+              __typename
+              id
+              ...ChatListMessageFragment
+            }
+          }
+        }
+      }
+    }
+  }
+}
+fragment BotImageInfoFragment on Bot {
+  id
+  botImageInfo {
+    assetTypeToUse
+    localAssetName
+    remoteAssetUrl
+  }
+}
+fragment BotMessagePointLimitFragment on MessagePointLimit {
+  id
+  balanceTooltipText
+  displayMessagePointPrice
+  fixedMessageLimit
+  numRemainingMessages
+  remainingMessagesLimitReason
+  shouldShowReminderBanner
+}
+fragment ChatListBotFragment on Bot {
+  __typename
+  id
+  botId
+  ...BotImageInfoFragment
+  deletionState
+  displayName
+  messagePointLimit {
+    __typename
+    id
+    ...BotMessagePointLimitFragment
+  }
+}
+fragment ChatListChatFragment on Chat {
+  id
+  chatId
+  defaultBotObject {
+    __typename
+    id
+    ...ChatListBotFragment
+  }
+  lastInteractionTime
+  title
+  isDeleted
+}
+fragment ChatListMessageFragment on Message {
+  id
+  text
+  authorNickname
+  creationTime
+}

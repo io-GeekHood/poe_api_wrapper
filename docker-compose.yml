@@ -1,0 +1,23 @@
+version: "3"
+services:
+  poe_api:
+    image: nexus.bmbzr.ir/nile/chatbot:v0.1
+    restart: always
+    hostname: poe_api
+    container_name: poe_api
+    ports:
+      - 9000:9000
+      - 8501:8501
+    environment:
+      HOST: 0.0.0.0
+      PORT: 9000
+      PROXY: http://angrynerd:l00pback@192.168.88.231:456
+      FORCE_RENEW: False
+      INSTANCE: v1
+    networks:
+      - nile
+  
+networks:
+  nile:
+    external: true
+

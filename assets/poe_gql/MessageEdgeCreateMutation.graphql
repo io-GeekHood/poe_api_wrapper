@@ -1,0 +1,231 @@
+mutation MessageEdgeCreateMutation(
+$chatId: BigInt
+$attachments: [String!]
+$bot: String!
+$query: String!
+$source: MessageSource
+$messagePointPrice: Int
+$existingMessageAttachmentsIds: [BigInt!]
+) {
+messageEdgeCreate(
+attachments: $attachments
+chatId: $chatId
+bot: $bot
+query: $query
+source: $source
+messagePointsDisplayPrice: $messagePointPrice
+existingMessageAttachmentsIds: $existingMessageAttachmentsIds
+) {
+status
+statusMessage
+chat {
+  __typename
+  id
+  chatId
+  ...ChatFragment
+  defaultBotObject {
+    id
+    shouldHide
+  }
+}
+message {
+  id
+  node {
+    __typename
+    id
+    ...MessageFragment
+  }
+}
+chatBreak {
+  id
+  node {
+    __typename
+    id
+    ...MessageFragment
+  }
+}
+viewer {
+  id
+  messagePointInfo {
+    __typename
+    id
+    ...MessagePointInfoFragment
+  }
+}
+}
+}
+fragment BotImageInfoFragment on Bot {
+id
+botImageInfo {
+assetTypeToUse
+localAssetName
+remoteAssetUrl
+}
+}
+fragment BotCreatorFragment on PoeUser {
+id
+__typename
+uid
+handle
+profilePhotoUrl
+}
+fragment BotMessagePointLimitFragment on MessagePointLimit {
+id
+balanceTooltipText
+displayMessagePointPrice
+fixedMessageLimit
+numRemainingMessages
+remainingMessagesLimitReason
+shouldShowReminderBanner
+}
+fragment BotFragment on Bot {
+__typename
+botId
+...BotImageInfoFragment
+baseModelDisplayName
+canUserAccessBot
+conversationStarters(count: 2)
+creator {
+__typename
+id
+...BotCreatorFragment
+}
+deletionState
+description
+disclaimerText
+displayName
+followerCount
+hasSuggestedReplies
+id
+introduction
+isCreatedByPoeUserAccount
+isDown
+isOfficialBot
+isPromptPublic
+isServerBot
+isTrustedBot
+limitedAccessType
+messagePointLimit {
+__typename
+id
+...BotMessagePointLimitFragment
+}
+messageTimeoutSecs
+nickname
+handle
+poweredBy
+promptPlaintext
+serverBotDependenciesLimitsString
+shareLink
+shouldHideLimitedAccessTag
+supportsFileUpload
+uploadFileSizeLimit
+viewerIsCreator
+viewerIsFollower
+translatedBotTags
+allowsImageAttachments
+monthlyActiveUsers
+supportsResend
+supportsRemix
+}
+fragment ChatFragment on Chat {
+id
+chatId
+defaultBotObject {
+__typename
+...BotFragment
+}
+lastInteractionTime
+membersIncludeUntrustedBot
+membersConnection {
+edges {
+  node {
+    __typename
+    id
+    ... on Bot {
+      __typename
+      botId
+      deletionState
+      displayName
+      messagePointLimit {
+        __typename
+        ...BotMessagePointLimitFragment
+      }
+      ...BotImageInfoFragment
+    }
+  }
+}
+}
+title
+isDeleted
+}
+fragment MessageAttachmentFragment on MessageAttachment {
+id
+name
+url
+file {
+size
+mimeType
+height
+width
+thumbnailUrl
+}
+isInline
+attachmentId
+}
+fragment MessageAttachmentsFragment on Message {
+attachments {
+__typename
+id
+...MessageAttachmentFragment
+}
+}
+fragment MessageBotHeaderFragment on Message {
+bot {
+__typename
+id
+botId
+...BotImageInfoFragment
+displayName
+deletionState
+handle
+supportsResend
+supportsRemix
+}
+}
+fragment MessageRecommendedBotsFragment on Bot {
+__typename
+id
+...BotImageInfoFragment
+displayName
+}
+fragment MessageFragment on Message {
+__typename
+id
+messageId
+text
+authorNickname
+sourceType
+state
+suggestedReplies
+vote
+hasCitations
+...MessageAttachmentsFragment
+creationTime
+...MessageBotHeaderFragment
+recommendedBots {
+__typename
+id
+...MessageRecommendedBotsFragment
+}
+}
+fragment MessagePointInfoFragment on MessagePointInfo {
+id
+dailyMessagePointsAvailable
+messagePointBalance
+messagePointResetTime
+messagePointUsage
+maxDailyTopUpAmount
+subscriberBonusGrantResetTime
+totalMessagePointAllotment
+}

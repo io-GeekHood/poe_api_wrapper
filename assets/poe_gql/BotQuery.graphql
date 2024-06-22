@@ -1,0 +1,81 @@
+query BotQuery($name: String!) {
+  bot(name: $name) {
+    __typename
+    id
+    ...BotFragment
+  }
+}
+fragment BotImageInfoFragment on Bot {
+  id
+  botImageInfo {
+    assetTypeToUse
+    localAssetName
+    remoteAssetUrl
+  }
+}
+fragment BotCreatorFragment on PoeUser {
+  id
+  __typename
+  uid
+  handle
+  profilePhotoUrl
+}
+fragment BotMessagePointLimitFragment on MessagePointLimit {
+  id
+  balanceTooltipText
+  displayMessagePointPrice
+  fixedMessageLimit
+  numRemainingMessages
+  remainingMessagesLimitReason
+  shouldShowReminderBanner
+}
+fragment BotFragment on Bot {
+  __typename
+  botId
+  ...BotImageInfoFragment
+  baseModelDisplayName
+  canUserAccessBot
+  conversationStarters(count: 2)
+  creator {
+    __typename
+    id
+    ...BotCreatorFragment
+  }
+  deletionState
+  description
+  disclaimerText
+  displayName
+  followerCount
+  hasSuggestedReplies
+  id
+  introduction
+  isCreatedByPoeUserAccount
+  isDown
+  isOfficialBot
+  isPromptPublic
+  isServerBot
+  isTrustedBot
+  limitedAccessType
+  messagePointLimit {
+    __typename
+    id
+    ...BotMessagePointLimitFragment
+  }
+  messageTimeoutSecs
+  nickname
+  handle
+  poweredBy
+  promptPlaintext
+  serverBotDependenciesLimitsString
+  shareLink
+  shouldHideLimitedAccessTag
+  supportsFileUpload
+  uploadFileSizeLimit
+  viewerIsCreator
+  viewerIsFollower
+  translatedBotTags
+  allowsImageAttachments
+  monthlyActiveUsers
+  supportsResend
+  supportsRemix
+}

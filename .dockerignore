@@ -1,0 +1,10 @@
+bin/
+lib/
+lib64/
+resources/
+share/
+__pycache__
+pdf_classifier.egg-info
+
+
+

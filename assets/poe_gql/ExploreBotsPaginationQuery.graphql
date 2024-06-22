@@ -1,0 +1,46 @@
+query ExploreBotsPaginationQuery(
+  $first: Int!
+  $after: String
+  $categoryName: String
+) {
+  exploreBotsConnection(
+    first: $first
+    after: $after
+    categoryName: $categoryName
+  ) {
+    __typename
+    edges {
+      node {
+        __typename
+        id
+        ...ExploreBotsFragment
+      }
+    }
+    ...PageInfoFragment
+  }
+}
+fragment BotImageInfoFragment on Bot {
+  id
+  botImageInfo {
+    assetTypeToUse
+    localAssetName
+    remoteAssetUrl
+  }
+}
+fragment ExploreBotsFragment on Bot {
+  __typename
+  id
+  botId
+  ...BotImageInfoFragment
+  displayName
+  description
+  followerCount
+  translatedBotTags
+  monthlyActiveUsers
+}
+fragment PageInfoFragment on Connection {
+  pageInfo {
+    endCursor
+    hasNextPage
+  }
+}

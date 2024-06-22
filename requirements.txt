@@ -1,0 +1,9 @@
+websocket-client
+python-socks
+python-graphql-client
+requests[socks]
+uvicorn
+fastapi
+quickjs
+httpx
+websockets_proxy

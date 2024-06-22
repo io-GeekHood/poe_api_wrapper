@@ -1,0 +1,20 @@
+query SubscriptionQuery {
+  viewer {
+    id
+    subscription {
+      __typename
+      id
+      ...PoeSubscriptionFragment
+    }
+  }
+}
+fragment PoeSubscriptionFragment on Subscription {
+  id
+  expiresTime
+  isActive
+  isComplimentary
+  isFreeTrial
+  planType
+  purchaseType
+  willCancelAtPeriodEnd
+}
